@@ -266,7 +266,6 @@ var update = function () {
 };
 
 	// ############ Render ###############
-
 	var renderLevel1 = function () {
 		if (bg1Ready && startLevel1 == true) {
 			ctx.drawImage(bg1Image, 0, 0);
