@@ -12,11 +12,14 @@ document.body.appendChild(canvas);
 
 // ############ Global Variables ############
 
+// for the death counter 
 var deaths = 0;
 var gravity = 0.25;
+// booleans that allow for the different levels to load 
 var startLevel2 = false;
 var startLevel1 = false;
 var startGame = true;
+// arrays 
 var allBats = [];
 var allPlatforms = [];
 // for sounds 
@@ -57,6 +60,14 @@ bg1Image.onload = function () {
 };
 bg1Image.src = "fpImages/background1.png";
 
+// Background Image 2
+var bg2Ready = false;
+var bg2Image = new Image();
+bg2Image.onload = function () {
+	bg2Ready = true;
+};
+bg2Image.src = "fpImages/background2.png";
+
 // Adventurer Image 
 var adventurerReady = false;
 var adventurerImage = new Image();
@@ -93,6 +104,7 @@ function sound(src) {
 }
 
 // ############ Game Objects #############
+
 var adventurer = {
 	name: "Indiana Jones",
 	gravity: gravity,
@@ -122,15 +134,15 @@ var adventurer = {
 	}
 };
 
-// this is what creates the bats in the screen for level 2
-function Bat() {
-	this.gravity = 2;
-	this.x = (Math.random() * canvas.width - 100);
-	this.y = (Math.random() * (canvas.width - 100));
-	// this.velX = (Math.floor(Math.random()*10));
-	// this.velY = (Math.floor(Math.random()*10));
-	allBats.push(this);
-}
+var bat = {
+	name: "Boss Bat",
+	direction: 1,
+	velX: 1.5,
+};
+
+// this sets the initial position for the bat
+bat.x = 200;
+bat.y = 0;
 
 // this is the function that creates the platforms
 function Platform(x, y, w, h, direction, type) {
@@ -154,6 +166,8 @@ var platform6 = new Platform(100, 100, 20, 2, 1, "normal");
 var platform7 = new Platform(300, 200, 40, 2, 1, "moving");
 var platform8 = new Platform(375, 120, 20, 2, 1, "normal");
 var finalPlatform = new Platform(460, 70, 52, 2, 1, "normal");
+// this is the platform for the ground of level 2
+var ground = new Platform(53, 455, 377, 2, 1, "normal");
 
 // ############ Functions ##############
 
@@ -181,13 +195,14 @@ var input = function () {
 		// adventurer.velX = 5;
 		adventurer.velX = adventurer.speed;
 	}
-	if (" " in keysDown) {
+	// this is what starts the game from the menu screen
+	if (" " in keysDown && startGame == true) {
 		startLevel1 = true;
 		startGame = false;
 	}
 };
 
-// this allows me to push items into an array
+// this function allows me to push items into an array
 function range(start, end) {
 	var arr = [];
 	for (let i = start; i <= end; i++) {
@@ -229,9 +244,19 @@ var update = function () {
 		// console.log("he's in the air!...") 
 		adventurer.velY += adventurer.gravity;
 	}
-	// if (adventurer.grounded == true) {
-	// 	adventurer.velY = 0;
-	// }
+	if (adventurer.y < 70 && adventurer.x > 460 && adventurer.grounded == true) {
+		startLevel1 = false;
+		startLevel2 = true;
+		adventurer.x = 240;
+		adventurer.y = canvas.height - 40;
+	}
+	// level 2 boundaries
+	if (adventurer.x <= 53 && startLevel2 == true) {
+		adventurer.x = 53;
+	}
+	if (adventurer.x >= 430 - adventurer.width && startLevel2 == true) {
+		adventurer.x = 430 - adventurer.width;
+	}
 
 	// ############ Collision Detection #############
 
@@ -256,91 +281,142 @@ var update = function () {
 			if (allPlatforms[plat].type == "moving") {
 				adventurer.velX += allPlatforms[plat].velX * allPlatforms[plat].direction;
 			}
-			// this allows the hero to stand on the platform 
+			// this allows the adventurer to stand on the platform 
 			adventurer.grounded = true;
 			adventurer.velY = 0;
 			adventurer.velX = 0;
 			adventurer.y = allPlatforms[plat].y - adventurer.height;
 		}
 	}
+
+	// ############# Bat Movement ############
+	// these are for the position of the bat
+
+	if (startLevel2 == true) {
+		bat.x += bat.velX * bat.direction;
+	}
+	// this || is an or statement for the conditional 
+	if (startLevel2 == true && bat.x > 290 || bat.x < 53) {
+		bat.direction = bat.direction * -1;
+	}
 };
 
-	// ############ Render ###############
-	var renderLevel1 = function () {
-		if (bg1Ready && startLevel1 == true) {
-			ctx.drawImage(bg1Image, 0, 0);
-		}
-		if (adventurerReady && startLevel1 == true) {
-			ctx.drawImage(adventurerImage, adventurer.x, adventurer.y);
-		}
-		if (startLevel1 == true) {
-			// this plays the lava audio whenever the first level starts
-			lavaAudio.play();
-		}
-		for (plat in allPlatforms) {
-			if (allPlatforms[plat].type == "normal") {
-				ctx.fillStyle = "black";
-			}
-			if (allPlatforms[plat].type == "moving") {
-				ctx.fillStyle = "blue";
-			}
-			ctx.fillRect(allPlatforms[plat].x, allPlatforms[plat].y, allPlatforms[plat].w, allPlatforms[plat].h);
-		}
-		ctx.fillStyle = "rgb(250, 250, 250)";
-		ctx.font = "24px Helvetica";
-		ctx.textAlign = "left";
-		ctx.textBaseline = "top";
-		ctx.fillText("Deaths: " + deaths, 16, 16);
+// ############ Render ###############
+
+var renderLevel1 = function () {
+	if (bg1Ready && startLevel1 == true) {
+		ctx.drawImage(bg1Image, 0, 0);
 	}
-
-	var renderLevel2 = function () {
-
+	if (adventurerReady && startLevel1 == true) {
+		ctx.drawImage(adventurerImage, adventurer.x, adventurer.y);
 	}
-
-	var renderMenu = function () {
-		if (menuReady && startGame == true) {
-			ctx.drawImage(menuImage, 0, 0)
+	if (startLevel1 == true) {
+		// this plays the lava audio whenever the first level starts
+		lavaAudio.play();
+	}
+	for (plat in allPlatforms) {
+		if (allPlatforms[plat].type == "normal") {
+			ctx.fillStyle = "black";
 		}
+		if (allPlatforms[plat].type == "moving") {
+			ctx.fillStyle = "blue";
+		}
+		ctx.fillRect(allPlatforms[plat].x, allPlatforms[plat].y, allPlatforms[plat].w, allPlatforms[plat].h);
 	}
+	ctx.fillStyle = "rgb(250, 250, 250)";
+	ctx.font = "24px Helvetica";
+	ctx.textAlign = "left";
+	ctx.textBaseline = "top";
+	ctx.fillText("Deaths: " + deaths, 16, 16);
+}
 
-	// ############ Main Loop Function ##############
+// this is the function that renders the second level
+var renderLevel2 = function () {
+	if (bg2Ready && startLevel2 == true) {
+		ctx.drawImage(bg2Image, 0, 0);
+	}
+	if (batReady && startLevel2 == true) {
+		ctx.drawImage(batImage, bat.x, bat.y);
+	}
+	if (adventurerReady && startLevel2 == true) {
+		ctx.drawImage(adventurerImage, adventurer.x, adventurer.y);
+	}
+	for (plat in allPlatforms) {
+		if (allPlatforms[plat].type == "normal") {
+			ctx.fillStyle = "black";
+		}
+		ctx.fillRect(allPlatforms[plat].x, allPlatforms[plat].y, allPlatforms[plat].w, allPlatforms[plat].h);
+	}
+	ctx.fillStyle = "rgb(250, 250, 250)";
+	ctx.font = "24px Helvetica";
+	ctx.textAlign = "left";
+	ctx.textBaseline = "top";
+	ctx.fillText("Deaths: " + deaths, 16, 16);
+}
 
-	// this is run when the game starts
-	var mainMenu = function () {
-		now = Date.now();
-		var delta = now - then;
+var renderMenu = function () {
+	if (menuReady && startGame == true) {
+		ctx.drawImage(menuImage, 0, 0)
+	}
+}
 
-		input(delta / 1000);
+// ############ Main Loop Function ##############
+
+// this is run when the game starts
+var mainMenu = function () {
+	now = Date.now();
+	var delta = now - then;
+
+	input(delta / 1000);
+	update(delta / 1000);
+	renderMenu();
+	// then = now;
+
+	// Request to do this again ASAP
+	requestAnimationFrame(mainMenu);
+};
+
+// this is what runs when level 1 starts 
+var level1 = function () {
+	now = Date.now();
+	var delta = now - then;
+
+	input(delta / 1000);
+	if (startLevel1 == true) {
+		allPlatforms = [startingPlatform, platform1, platform2, platform3, platform4, platform5, platform6, platform7, platform8, finalPlatform];
 		update(delta / 1000);
-		renderMenu();
-		// then = now;
+	}
+	renderLevel1();
+	// then = now;
 
-		// Request to do this again ASAP
-		requestAnimationFrame(mainMenu);
-	};
+	// Request to do this again ASAP
+	requestAnimationFrame(level1);
+};
 
-	// this is what runs when level 1 starts 
-	var level1 = function () {
-		now = Date.now();
-		var delta = now - then;
+var level2 = function () {
+	now = Date.now();
+	var delta = now - then;
 
-		input(delta / 1000);
-		if (startLevel1 == true) {
-			update(delta / 1000);
-		}
-		renderLevel1();
-		// then = now;
+	input(delta / 1000);
+	if (startLevel2 == true) {
+		update(delta / 1000);
+		allPlatforms = [ground];
+	}
+	renderLevel2();
+	// then = now;
 
-		// Request to do this again ASAP
-		requestAnimationFrame(level1);
-	};
+	// Request to do this again ASAP
+	requestAnimationFrame(level2);
+};
 
-	// Cross-browser support for requestAnimationFrame
-	var w = window;
-	requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.mozRequestAnimationFrame;
+// Cross-browser support for requestAnimationFrame
+var w = window;
+requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.mozRequestAnimationFrame;
 
-	var then = Date.now();
+var then = Date.now();
 
-	reset();
-	level1();
-	mainMenu();
+// these are the functions to initiate the game 
+reset();
+level2();
+level1();
+mainMenu();
