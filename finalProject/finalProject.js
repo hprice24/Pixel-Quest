@@ -1,5 +1,6 @@
 // ########### Sources ########### ... heavily modified from original code used 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+// https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/The_head_metadata_in_HTML
 // https://www.kisspng.com/png-batman-joker-pixel-art-bat-signal-coumputer-4554363/ (used this for my bat image which I slightly modified)
 
 // ########### Setup Canvas ############
