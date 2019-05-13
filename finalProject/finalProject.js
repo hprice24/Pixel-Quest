@@ -1,3 +1,7 @@
+// ########### Sources ########### ... heavily modified from original code used 
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+// https://www.kisspng.com/png-batman-joker-pixel-art-bat-signal-coumputer-4554363/ (used this for my bat image which I slightly modified)
+
 // ########### Setup Canvas ############
 
 //create the canvas element
@@ -265,6 +269,7 @@ var update = function () {
 	// ############ Collision Detection #############
 
 	for (plat in allPlatforms) {
+		// these are the conditional statements for the collision between the adventurer and the platforms 
 		if (allPlatforms[plat].type == "moving") {
 			allPlatforms[plat].velX = .5;
 			allPlatforms[plat].x += allPlatforms[plat].velX * allPlatforms[plat].direction;
@@ -285,7 +290,7 @@ var update = function () {
 			if (allPlatforms[plat].type == "moving") {
 				adventurer.velX += allPlatforms[plat].velX * allPlatforms[plat].direction;
 			}
-			// this allows the adventurer to stand on the platform 
+			// this allows the adventurer to stand on the platform (kind of) and it stops his momentum to make the level a bit easier 
 			adventurer.grounded = true;
 			adventurer.velY = 0;
 			adventurer.velX = 0;
@@ -294,12 +299,12 @@ var update = function () {
 	}
 
 	// ############# Bat Movement ############
-	// these are for the position of the bat
 
+	// this is what is causing the bat to actually move 
 	if (startLevel2 == true) {
 		bat.x += bat.velX * bat.direction;
 	}
-	// this || is an or statement for the conditional 
+	// this || is an or statement for the conditional and it causes the bat to change direction when he hits a wall
 	if (startLevel2 == true && bat.x > 290 || bat.x < 53) {
 		bat.direction = bat.direction * -1;
 	}
