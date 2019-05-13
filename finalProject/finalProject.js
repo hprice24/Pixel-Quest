@@ -35,6 +35,8 @@ var lavaAudio;
 lavaAudio = new sound("fpAudio/audioLava.mp3");
 var level1Audio;
 level1Audio = new sound("fpAudio/audioPlatform.mp3");
+var level2Audio;
+level2Audio = new sound("fpAudio/audioBoss.mp3")
 
 // ############ Setup Keyboard Controls ###########
 
@@ -355,6 +357,10 @@ var renderLevel2 = function () {
 	}
 	if (adventurerReady && startLevel2 == true) {
 		ctx.drawImage(adventurerImage, adventurer.x, adventurer.y);
+	}
+	if (startlevel2 == true) {
+		// this plays the audio for the boss battle 
+		level2Audio.play();
 	}
 	for (plat in allPlatforms) {
 		if (allPlatforms[plat].type == "normal") {
