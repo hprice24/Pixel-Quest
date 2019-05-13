@@ -1,4 +1,4 @@
-// ########### Sources ########### ... heavily modified from original code used 
+// ########### Sources ########### 
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean
 // https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/The_head_metadata_in_HTML
@@ -175,7 +175,7 @@ var platform5 = new Platform(0, 175, 20, 2, 1, "normal");
 var platform6 = new Platform(100, 100, 20, 2, 1, "normal");
 var platform7 = new Platform(300, 200, 40, 2, 1, "moving");
 var platform8 = new Platform(375, 120, 20, 2, 1, "normal");
-var finalPlatform = new Platform(460, 70, 52, 2, 1, "normal");
+var finalPlatform = new Platform(460, 70, 52, 2, 1, "final");
 // this is the platform for the ground of level 2
 var ground = new Platform(53, 455, 377, 2, 1, "normal");
 
@@ -331,6 +331,9 @@ var renderLevel1 = function () {
 		}
 		if (allPlatforms[plat].type == "moving") {
 			ctx.fillStyle = "blue";
+		}
+		if (allPlatforms[plat].type == "final") {
+			ctx.fillStyle = "red"
 		}
 		ctx.fillRect(allPlatforms[plat].x, allPlatforms[plat].y, allPlatforms[plat].w, allPlatforms[plat].h);
 	}
