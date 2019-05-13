@@ -358,7 +358,7 @@ var renderLevel2 = function () {
 	if (adventurerReady && startLevel2 == true) {
 		ctx.drawImage(adventurerImage, adventurer.x, adventurer.y);
 	}
-	if (startlevel2 == true) {
+	if (startLevel2 == true) {
 		// this plays the audio for the boss battle 
 		level2Audio.play();
 	}
