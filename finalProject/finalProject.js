@@ -19,7 +19,7 @@ var gravity = 0.25;
 var startLevel2 = false;
 var startLevel1 = false;
 var startGame = true;
-// arrays 
+// arrays for the game objects 
 var allBats = [];
 var allPlatforms = [];
 // for sounds 
@@ -32,8 +32,10 @@ level1Audio = new sound("fpAudio/audioPlatform.mp3");
 
 // ############ Setup Keyboard Controls ###########
 
+// this is the variable for sensing whether the key is pressed or not
 var keysDown = {};
 
+// these event listeners are checking if a certain key is pressed 
 addEventListener("keydown", function (e) {
 	keysDown[e.key] = true;
 }, false);
@@ -105,6 +107,7 @@ function sound(src) {
 
 // ############ Game Objects #############
 
+// this is object for the main character which holds all of his attributes 
 var adventurer = {
 	name: "Indiana Jones",
 	gravity: gravity,
@@ -134,6 +137,7 @@ var adventurer = {
 	}
 };
 
+// this is the object for the boss bat once level 1 has been completed
 var bat = {
 	name: "Boss Bat",
 	direction: 1,
@@ -323,6 +327,7 @@ var renderLevel1 = function () {
 		}
 		ctx.fillRect(allPlatforms[plat].x, allPlatforms[plat].y, allPlatforms[plat].w, allPlatforms[plat].h);
 	}
+	// this adds the text at the top of the screen which counts deaths
 	ctx.fillStyle = "rgb(250, 250, 250)";
 	ctx.font = "24px Helvetica";
 	ctx.textAlign = "left";
@@ -354,6 +359,7 @@ var renderLevel2 = function () {
 	ctx.fillText("Deaths: " + deaths, 16, 16);
 }
 
+// this renders the menu screen at the beginning of the game 
 var renderMenu = function () {
 	if (menuReady && startGame == true) {
 		ctx.drawImage(menuImage, 0, 0)
@@ -383,6 +389,7 @@ var level1 = function () {
 
 	input(delta / 1000);
 	if (startLevel1 == true) {
+		// this sets the platform array to every platform but the ground platform 
 		allPlatforms = [startingPlatform, platform1, platform2, platform3, platform4, platform5, platform6, platform7, platform8, finalPlatform];
 		update(delta / 1000);
 	}
