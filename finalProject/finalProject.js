@@ -368,6 +368,7 @@ var renderLevel2 = function () {
 		}
 		ctx.fillRect(allPlatforms[plat].x, allPlatforms[plat].y, allPlatforms[plat].w, allPlatforms[plat].h);
 	}
+	// this adds the text that counts death
 	ctx.fillStyle = "rgb(250, 250, 250)";
 	ctx.font = "24px Helvetica";
 	ctx.textAlign = "left";
